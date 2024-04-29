@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image and Color Editor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+        .image-container {
+            flex: 1;
+            padding: 20px;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+        }
+        .data-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: right;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        input[type="text"] {
+            width: 100px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="image-container">
+        <img src="{{ url_for('static', filename='ClimbingImage.jpg') }}" alt="Climbing Hold Image">
+    </div>
+    <div class="data-container">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Color</th>
+                <th>RouteID</th>
+                <th>Grade</th>
+                <th>Edit details</th>
+            </tr>
+            {% for obj in data['objects'] %}
+            <tr>
+                <td>{{ obj['id'] }}</td>
+                <td>{{ obj['color'] }}</td>
+                <td>{{ obj['route_id'] }}</td>
+                <td>{{ obj['grade'] }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('edit', id=obj['id']) }}">
+                        <input type="text" name="color" value="{{ obj['color'] }}">
+                        <input type="text" name="route_id" value="{{ obj['route_id'] }}">
+                        <input type="text" name="grade" value="{{ obj['grade'] }}">
+                        <button type="submit">Edit</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <form method="post" action="{{ url_for('save') }}">
+            <button type="submit">Save Changes</button>
+        </form>
+        <form action="/shutdown" method="post">
+            <button type="submit" onclick="refreshPage()">Next Camera View</button>
+        </form>
+        <script>
+            function refreshPage() {
+                location.reload();
+            }
+        </script>
+    </div>
+</body>
+</html>
